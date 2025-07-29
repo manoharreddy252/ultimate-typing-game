@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useGameStore } from '../stores/gameStore';
-import confetti from 'canvas-confetti';
+// import confetti from 'canvas-confetti';
 import { 
   TrophyIcon, 
   BoltIcon, 
@@ -24,11 +24,8 @@ const ResultsModal: React.FC = () => {
   
   React.useEffect(() => {
     if (showResults && wpm > 60) {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      // Confetti animation would go here
+      console.log('🎉 Great performance!');
     }
   }, [showResults, wpm]);
   

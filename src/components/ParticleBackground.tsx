@@ -15,7 +15,7 @@ const ParticleBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { theme, isPlaying } = useGameStore();
   const particlesRef = useRef<Particle[]>([]);
-  const animationRef = useRef<number | undefined>();
+  const animationRef = useRef<number | undefined>(undefined);
   
   const getThemeColors = () => {
     switch (theme) {

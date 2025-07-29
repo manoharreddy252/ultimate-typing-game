@@ -35,7 +35,7 @@ export interface GameState {
   // UI
   showResults: boolean;
   theme: 'neon' | 'matrix' | 'cyberpunk';
-  difficulty: 'easy' | 'medium' | 'hard';
+  difficulty: 'easy' | 'medium' | 'hard' | 'code';
   
   // Actions
   startGame: (text: string) => void;
@@ -43,7 +43,7 @@ export interface GameState {
   updateProgress: (index: number, isCorrect: boolean) => void;
   resetGame: () => void;
   setTheme: (theme: 'neon' | 'matrix' | 'cyberpunk') => void;
-  setDifficulty: (difficulty: 'easy' | 'medium' | 'hard') => void;
+  setDifficulty: (difficulty: 'easy' | 'medium' | 'hard' | 'code') => void;
   joinRoom: (roomId: string, playerName: string) => void;
   updatePlayer: (playerId: string, data: Partial<Player>) => void;
   addPlayer: (player: Player) => void;

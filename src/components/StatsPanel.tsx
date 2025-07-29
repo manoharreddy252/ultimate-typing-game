@@ -115,7 +115,6 @@ const StatsPanel: React.FC = () => {
             {stat.label}
           </div>
           
-          {/* Animated progress bar for WPM */}
           {stat.label === 'WPM' && (
             <motion.div
               className="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden"
@@ -129,7 +128,6 @@ const StatsPanel: React.FC = () => {
             </motion.div>
           )}
           
-          {/* Animated progress bar for Accuracy */}
           {stat.label === 'Accuracy' && (
             <motion.div
               className="mt-2 h-1 bg-gray-700 rounded-full overflow-hidden"
@@ -143,4 +141,9 @@ const StatsPanel: React.FC = () => {
             </motion.div>
           )}
         </motion.div>
-      ))}\n    </motion.div>\n  );\n};\n\nexport default StatsPanel;
+      ))}
+    </motion.div>
+  );
+};
+
+export default StatsPanel;

@@ -51,4 +51,97 @@ const GameControls: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-    >\n      {/* Start/Reset Button */}\n      <motion.button\n        onClick={isPlaying || isFinished ? handleReset : handleStart}\n        className={`\n          flex items-center gap-2 px-6 py-3 rounded-xl font-semibold\n          glass border-2 transition-all duration-300\n          ${isPlaying || isFinished \n            ? 'border-red-500 text-red-400 hover:bg-red-500/20' \n            : 'border-green-500 text-green-400 hover:bg-green-500/20'\n          }\n          hover:scale-105 hover:shadow-lg neon-border\n        `}\n        whileHover={{ scale: 1.05 }}\n        whileTap={{ scale: 0.95 }}\n      >\n        {isPlaying || isFinished ? (\n          <>\n            <ArrowPathIcon className=\"w-5 h-5\" />\n            Reset\n          </>\n        ) : (\n          <>\n            <PlayIcon className=\"w-5 h-5\" />\n            Start Game\n          </>\n        )}\n      </motion.button>\n      \n      {/* Difficulty Selector */}\n      <div className=\"flex items-center gap-2\">\n        <Cog6ToothIcon className=\"w-5 h-5 text-gray-400\" />\n        <div className=\"flex rounded-xl overflow-hidden border border-gray-600\">\n          {difficulties.map((diff) => (\n            <motion.button\n              key={diff.key}\n              onClick={() => setDifficulty(diff.key)}\n              className={`\n                px-4 py-2 text-sm font-medium transition-all duration-300\n                ${difficulty === diff.key \n                  ? `${diff.color} bg-white/10` \n                  : 'text-gray-400 hover:text-white hover:bg-white/5'\n                }\n              `}\n              whileHover={{ scale: 1.05 }}\n              whileTap={{ scale: 0.95 }}\n            >\n              {diff.label}\n            </motion.button>\n          ))}\n        </div>\n      </div>\n      \n      {/* Theme Selector */}\n      <div className=\"flex items-center gap-2\">\n        <SparklesIcon className=\"w-5 h-5 text-gray-400\" />\n        <div className=\"flex rounded-xl overflow-hidden border border-gray-600\">\n          {themes.map((themeOption) => (\n            <motion.button\n              key={themeOption.key}\n              onClick={() => setTheme(themeOption.key)}\n              className={`\n                px-4 py-2 text-sm font-medium transition-all duration-300\n                ${theme === themeOption.key \n                  ? `bg-gradient-to-r ${themeOption.color} text-white` \n                  : 'text-gray-400 hover:text-white hover:bg-white/5'\n                }\n              `}\n              whileHover={{ scale: 1.05 }}\n              whileTap={{ scale: 0.95 }}\n            >\n              {themeOption.label}\n            </motion.button>\n          ))}\n        </div>\n      </div>\n      \n      {/* Multiplayer Button */}\n      <motion.button\n        className={`\n          flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium\n          glass border transition-all duration-300\n          ${isMultiplayer \n            ? 'border-purple-500 text-purple-400 bg-purple-500/20' \n            : 'border-gray-600 text-gray-400 hover:border-purple-500 hover:text-purple-400'\n          }\n        `}\n        whileHover={{ scale: 1.05 }}\n        whileTap={{ scale: 0.95 }}\n      >\n        <UserGroupIcon className=\"w-4 h-4\" />\n        {isMultiplayer ? 'In Room' : 'Multiplayer'}\n      </motion.button>\n    </motion.div>\n  );\n};\n\nexport default GameControls;
+    >
+      <motion.button
+        onClick={isPlaying || isFinished ? handleReset : handleStart}
+        className={`
+          flex items-center gap-2 px-6 py-3 rounded-xl font-semibold
+          glass border-2 transition-all duration-300
+          ${isPlaying || isFinished 
+            ? 'border-red-500 text-red-400 hover:bg-red-500/20' 
+            : 'border-green-500 text-green-400 hover:bg-green-500/20'
+          }
+          hover:scale-105 hover:shadow-lg neon-border
+        `}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        {isPlaying || isFinished ? (
+          <>
+            <ArrowPathIcon className="w-5 h-5" />
+            Reset
+          </>
+        ) : (
+          <>
+            <PlayIcon className="w-5 h-5" />
+            Start Game
+          </>
+        )}
+      </motion.button>
+      
+      <div className="flex items-center gap-2">
+        <Cog6ToothIcon className="w-5 h-5 text-gray-400" />
+        <div className="flex rounded-xl overflow-hidden border border-gray-600">
+          {difficulties.map((diff) => (
+            <motion.button
+              key={diff.key}
+              onClick={() => setDifficulty(diff.key)}
+              className={`
+                px-4 py-2 text-sm font-medium transition-all duration-300
+                ${difficulty === diff.key 
+                  ? `${diff.color} bg-white/10` 
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }
+              `}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {diff.label}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+      
+      <div className="flex items-center gap-2">
+        <SparklesIcon className="w-5 h-5 text-gray-400" />
+        <div className="flex rounded-xl overflow-hidden border border-gray-600">
+          {themes.map((themeOption) => (
+            <motion.button
+              key={themeOption.key}
+              onClick={() => setTheme(themeOption.key)}
+              className={`
+                px-4 py-2 text-sm font-medium transition-all duration-300
+                ${theme === themeOption.key 
+                  ? `bg-gradient-to-r ${themeOption.color} text-white` 
+                  : 'text-gray-400 hover:text-white hover:bg-white/5'
+                }
+              `}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {themeOption.label}
+            </motion.button>
+          ))}
+        </div>
+      </div>
+      
+      <motion.button
+        className={`
+          flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
+          glass border transition-all duration-300
+          ${isMultiplayer 
+            ? 'border-purple-500 text-purple-400 bg-purple-500/20' 
+            : 'border-gray-600 text-gray-400 hover:border-purple-500 hover:text-purple-400'
+          }
+        `}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+      >
+        <UserGroupIcon className="w-4 h-4" />
+        {isMultiplayer ? 'In Room' : 'Multiplayer'}
+      </motion.button>
+    </motion.div>
+  );
+};
+
+export default GameControls;

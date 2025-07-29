@@ -1,1 +1,171 @@
-import React, { useEffect, useRef } from 'react';\nimport { useGameStore } from '../stores/gameStore';\n\ninterface Particle {\n  x: number;\n  y: number;\n  vx: number;\n  vy: number;\n  size: number;\n  opacity: number;\n  color: string;\n}\n\nconst ParticleBackground: React.FC = () => {\n  const canvasRef = useRef<HTMLCanvasElement>(null);\n  const { theme, isPlaying } = useGameStore();\n  const particlesRef = useRef<Particle[]>([]);\n  const animationRef = useRef<number>();\n  \n  const getThemeColors = () => {\n    switch (theme) {\n      case 'matrix':\n        return ['#00ff00', '#00cc00', '#009900'];\n      case 'cyberpunk':\n        return ['#ff1493', '#bf00ff', '#ff6b6b'];\n      default:\n        return ['#00f5ff', '#0080ff', '#4169e1'];\n    }\n  };\n  \n  const createParticle = (canvas: HTMLCanvasElement): Particle => {\n    const colors = getThemeColors();\n    return {\n      x: Math.random() * canvas.width,\n      y: Math.random() * canvas.height,\n      vx: (Math.random() - 0.5) * 0.5,\n      vy: (Math.random() - 0.5) * 0.5,\n      size: Math.random() * 2 + 1,\n      opacity: Math.random() * 0.5 + 0.2,\n      color: colors[Math.floor(Math.random() * colors.length)]\n    };\n  };\n  \n  const initParticles = (canvas: HTMLCanvasElement) => {\n    const particleCount = isPlaying ? 150 : 100;\n    particlesRef.current = [];\n    \n    for (let i = 0; i < particleCount; i++) {\n      particlesRef.current.push(createParticle(canvas));\n    }\n  };\n  \n  const updateParticles = (canvas: HTMLCanvasElement) => {\n    particlesRef.current.forEach(particle => {\n      particle.x += particle.vx;\n      particle.y += particle.vy;\n      \n      // Wrap around edges\n      if (particle.x < 0) particle.x = canvas.width;\n      if (particle.x > canvas.width) particle.x = 0;\n      if (particle.y < 0) particle.y = canvas.height;\n      if (particle.y > canvas.height) particle.y = 0;\n      \n      // Pulse opacity when playing\n      if (isPlaying) {\n        particle.opacity = 0.3 + Math.sin(Date.now() * 0.001 + particle.x * 0.01) * 0.2;\n      }\n    });\n  };\n  \n  const drawParticles = (ctx: CanvasRenderingContext2D) => {\n    particlesRef.current.forEach(particle => {\n      ctx.save();\n      ctx.globalAlpha = particle.opacity;\n      ctx.fillStyle = particle.color;\n      ctx.shadowBlur = 10;\n      ctx.shadowColor = particle.color;\n      \n      ctx.beginPath();\n      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);\n      ctx.fill();\n      \n      ctx.restore();\n    });\n  };\n  \n  const drawConnections = (ctx: CanvasRenderingContext2D) => {\n    const maxDistance = 100;\n    \n    for (let i = 0; i < particlesRef.current.length; i++) {\n      for (let j = i + 1; j < particlesRef.current.length; j++) {\n        const p1 = particlesRef.current[i];\n        const p2 = particlesRef.current[j];\n        \n        const dx = p1.x - p2.x;\n        const dy = p1.y - p2.y;\n        const distance = Math.sqrt(dx * dx + dy * dy);\n        \n        if (distance < maxDistance) {\n          const opacity = (1 - distance / maxDistance) * 0.2;\n          \n          ctx.save();\n          ctx.globalAlpha = opacity;\n          ctx.strokeStyle = p1.color;\n          ctx.lineWidth = 0.5;\n          ctx.shadowBlur = 5;\n          ctx.shadowColor = p1.color;\n          \n          ctx.beginPath();\n          ctx.moveTo(p1.x, p1.y);\n          ctx.lineTo(p2.x, p2.y);\n          ctx.stroke();\n          \n          ctx.restore();\n        }\n      }\n    }\n  };\n  \n  const animate = () => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n    \n    const ctx = canvas.getContext('2d');\n    if (!ctx) return;\n    \n    // Clear canvas\n    ctx.clearRect(0, 0, canvas.width, canvas.height);\n    \n    // Update and draw particles\n    updateParticles(canvas);\n    drawConnections(ctx);\n    drawParticles(ctx);\n    \n    animationRef.current = requestAnimationFrame(animate);\n  };\n  \n  const resizeCanvas = () => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n    \n    canvas.width = window.innerWidth;\n    canvas.height = window.innerHeight;\n    \n    initParticles(canvas);\n  };\n  \n  useEffect(() => {\n    const canvas = canvasRef.current;\n    if (!canvas) return;\n    \n    resizeCanvas();\n    animate();\n    \n    const handleResize = () => resizeCanvas();\n    window.addEventListener('resize', handleResize);\n    \n    return () => {\n      window.removeEventListener('resize', handleResize);\n      if (animationRef.current) {\n        cancelAnimationFrame(animationRef.current);\n      }\n    };\n  }, [theme, isPlaying]);\n  \n  return (\n    <canvas\n      ref={canvasRef}\n      className=\"particles fixed inset-0 pointer-events-none\"\n      style={{ zIndex: -1 }}\n    />\n  );\n};\n\nexport default ParticleBackground;
+import React, { useEffect, useRef } from 'react';
+import { useGameStore } from '../stores/gameStore';
+
+interface Particle {
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+  size: number;
+  opacity: number;
+  color: string;
+}
+
+const ParticleBackground: React.FC = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { theme, isPlaying } = useGameStore();
+  const particlesRef = useRef<Particle[]>([]);
+  const animationRef = useRef<number>();
+  
+  const getThemeColors = () => {
+    switch (theme) {
+      case 'matrix':
+        return ['#00ff00', '#00cc00', '#009900'];
+      case 'cyberpunk':
+        return ['#ff1493', '#bf00ff', '#ff6b6b'];
+      default:
+        return ['#00f5ff', '#0080ff', '#4169e1'];
+    }
+  };
+  
+  const createParticle = (canvas: HTMLCanvasElement): Particle => {
+    const colors = getThemeColors();
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.5 + 0.2,
+      color: colors[Math.floor(Math.random() * colors.length)]
+    };
+  };
+  
+  const initParticles = (canvas: HTMLCanvasElement) => {
+    const particleCount = isPlaying ? 150 : 100;
+    particlesRef.current = [];
+    
+    for (let i = 0; i < particleCount; i++) {
+      particlesRef.current.push(createParticle(canvas));
+    }
+  };
+  
+  const updateParticles = (canvas: HTMLCanvasElement) => {
+    particlesRef.current.forEach(particle => {
+      particle.x += particle.vx;
+      particle.y += particle.vy;
+      
+      if (particle.x < 0) particle.x = canvas.width;
+      if (particle.x > canvas.width) particle.x = 0;
+      if (particle.y < 0) particle.y = canvas.height;
+      if (particle.y > canvas.height) particle.y = 0;
+      
+      if (isPlaying) {
+        particle.opacity = 0.3 + Math.sin(Date.now() * 0.001 + particle.x * 0.01) * 0.2;
+      }
+    });
+  };
+  
+  const drawParticles = (ctx: CanvasRenderingContext2D) => {
+    particlesRef.current.forEach(particle => {
+      ctx.save();
+      ctx.globalAlpha = particle.opacity;
+      ctx.fillStyle = particle.color;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = particle.color;
+      
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.restore();
+    });
+  };
+  
+  const drawConnections = (ctx: CanvasRenderingContext2D) => {
+    const maxDistance = 100;
+    
+    for (let i = 0; i < particlesRef.current.length; i++) {
+      for (let j = i + 1; j < particlesRef.current.length; j++) {
+        const p1 = particlesRef.current[i];
+        const p2 = particlesRef.current[j];
+        
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < maxDistance) {
+          const opacity = (1 - distance / maxDistance) * 0.2;
+          
+          ctx.save();
+          ctx.globalAlpha = opacity;
+          ctx.strokeStyle = p1.color;
+          ctx.lineWidth = 0.5;
+          ctx.shadowBlur = 5;
+          ctx.shadowColor = p1.color;
+          
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          
+          ctx.restore();
+        }
+      }
+    }
+  };
+  
+  const animate = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    updateParticles(canvas);
+    drawConnections(ctx);
+    drawParticles(ctx);
+    
+    animationRef.current = requestAnimationFrame(animate);
+  };
+  
+  const resizeCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    initParticles(canvas);
+  };
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    resizeCanvas();
+    animate();
+    
+    const handleResize = () => resizeCanvas();
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [theme, isPlaying]);
+  
+  return (
+    <canvas
+      ref={canvasRef}
+      className="particles fixed inset-0 pointer-events-none"
+      style={{ zIndex: -1 }}
+    />
+  );
+};
+
+export default ParticleBackground;

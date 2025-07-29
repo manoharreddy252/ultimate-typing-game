@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/ultimate-typing-game/static/css/main.61a89afd.css",
+    "main.js": "/ultimate-typing-game/static/js/main.2a87c4ce.js",
+    "static/js/453.e563234a.chunk.js": "/ultimate-typing-game/static/js/453.e563234a.chunk.js",
+    "index.html": "/ultimate-typing-game/index.html",
+    "main.61a89afd.css.map": "/ultimate-typing-game/static/css/main.61a89afd.css.map",
+    "main.2a87c4ce.js.map": "/ultimate-typing-game/static/js/main.2a87c4ce.js.map",
+    "453.e563234a.chunk.js.map": "/ultimate-typing-game/static/js/453.e563234a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.61a89afd.css",
+    "static/js/main.2a87c4ce.js"
+  ]
+}
